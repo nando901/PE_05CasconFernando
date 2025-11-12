@@ -15,6 +15,7 @@ public class PE_05CasconFernando {
         double preuUnitari = 0, subtotal = 0, total = 0;
         int quantitat = 0;
 
+        //bucle inicial
         do {
             System.out.println("______________________________________");
             System.out.println("===== GESTIÓ COMANDES RESTAURANT ====="); 
@@ -27,6 +28,7 @@ public class PE_05CasconFernando {
             sc.nextLine();
 
             switch (mainMenu) {
+                //Nova comanda
                 case 1:
                     System.out.println("______________________________________");
                     System.out.println("============ NOVA COMANDA ============");
@@ -36,6 +38,8 @@ public class PE_05CasconFernando {
 
                     ticket += "Client: " + client + "\n\n" + formatearColumna("Producte", 20) + formatearColumna("Quantitat", 13) + formatearColumna("Preu unit.", 13) + formatearColumna("Subtotal", 13) + "\n";
                     ticket += "---------------------------------------------------------\n"; 
+
+                    //bucle per anar afegint productes
                     do {
                         producte = producte();
                         preuUnitari = preuUnitari();
@@ -45,11 +49,12 @@ public class PE_05CasconFernando {
                         subtotal = preuUnitari * quantitat;
                         total += subtotal;
 
-                        ticket += formatearColumna(producte, 20) + formatearColumna(quantitat, 13) + formatearColumna(String.format("%.2f€", preuUnitari), 13) + formatearColumna(String.format("%.2f€", subtotal), 13)+ "\n";
+                        //actualitzacio del ticket
+                        ticket = actualizarTicket(producte, quantitat, preuUnitari, subtotal, ticket);
 
                     } while (afegir.equalsIgnoreCase("s"));
 
-                    ticketTotal = calculIva(total, ticketTotal);
+                    ticketTotal = calculIva(total);
 
                     System.out.println("\nS'està generant el tiquet...");
                     System.out.println("______________________________________\n=============== TIQUET ===============\n______________________________________\n\n");
@@ -57,7 +62,9 @@ public class PE_05CasconFernando {
                     System.out.println("Comanda enregistrada correctament.");
                     break;
 
+                //actualitzar comanda
                 case 2:
+                    //comprovar que hi hagi un ticket existent
                     if (ticket.equals("")) {
                         System.out.println("Error, crea una nova comanda.");
 
@@ -71,23 +78,24 @@ public class PE_05CasconFernando {
                             subtotal = preuUnitari * quantitat;
                             total += subtotal;
 
-                            ticket += formatearColumna(producte, 20) + formatearColumna(quantitat, 13) + formatearColumna(String.format("%.2f€", preuUnitari), 13) + formatearColumna(String.format("%.2f€", subtotal), 13)+ "\n";
+                            ticket = actualizarTicket(producte, quantitat, preuUnitari, subtotal, ticket);
 
                         } while (afegir.equalsIgnoreCase("s"));
 
-                        ticketTotal = ""; //reseteo el ticket total para que se actualize entero
-                        ticketTotal = calculIva(total, ticketTotal);
+                        ticketTotal = calculIva(total);
                         System.out.println("______________________________________\n========== TIQUET ACTUALITZAT=========\n______________________________________\n\n");
                         System.out.println(ticket + ticketTotal);
                         System.out.println("Comanda actialitzada correctament.");
                     }
                     break;
 
+                //imprimir ultim ticket
                 case 3:
                     System.out.println("______________________________________\n============ ÚLTIM TIQUET ============\n______________________________________\n");
                     System.out.println(ticket + ticketTotal);
                     break;
 
+                //finalitzacio de codi
                 case 4:
                     System.out.println("______________________________________\n========== FINS LA PROPERA! ==========\n______________________________________\n\n");
                     break;
@@ -97,8 +105,10 @@ public class PE_05CasconFernando {
         sc.close();
     }
 
+    
+    //metode per al format del ticket
     public String formatearColumna(Object valor, int ancho) {
-        String texto = "" + valor; // convierte cualquier cosa a String
+        String texto = "" + valor; 
         String resultado = texto;
 
         if (texto.length() < ancho) {
@@ -109,10 +119,6 @@ public class PE_05CasconFernando {
 
         return resultado;
     }
-
-    /********************
-    FUNCIONES CASO 1
-    ********************/
 
     public String producte() {
         String producte = "";
@@ -179,7 +185,9 @@ public class PE_05CasconFernando {
         return afegir;
     }
 
-    public String calculIva(double total, String ticket) {
+    //metode per calcular el preu final amb l'iva
+    public String calculIva(double total) {
+        String ticketTotal = "";
         double iva = 0.1;
         double ivaTotal = 0;
         double preuFinal = 0;
@@ -187,12 +195,18 @@ public class PE_05CasconFernando {
         ivaTotal = total * iva;
         preuFinal = total + ivaTotal;
 
-        ticket += "---------------------------------------------------------\n";
-        ticket += String.format("%-35s %15.2f€\n", "Total sense IVA:", total);
-        ticket += String.format("%-35s %15.2f€\n", "IVA (10%):", ivaTotal);
-        ticket += String.format("%-35s %15.2f€\n", "TOTAL A PAGAR:", preuFinal);
-        ticket += "=========================================================\n";
+        ticketTotal += "---------------------------------------------------------\n";
+        ticketTotal += String.format("%-35s %15.2f€\n", "Total sense IVA:", total);
+        ticketTotal += String.format("%-35s %15.2f€\n", "IVA (10%):", ivaTotal);
+        ticketTotal += String.format("%-35s %15.2f€\n", "TOTAL A PAGAR:", preuFinal);
+        ticketTotal += "=========================================================\n";
 
+        return ticketTotal;
+    }
+
+    public String actualizarTicket(String producte, int quantitat, double preuUnitari, double subtotal, String ticket) {
+
+        ticket += formatearColumna(producte, 20) + formatearColumna(quantitat, 13) + formatearColumna(String.format("%.2f€", preuUnitari), 13) + formatearColumna(String.format("%.2f€", subtotal), 13) + "\n";
         return ticket;
     }
 }
