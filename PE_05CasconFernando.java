@@ -66,7 +66,7 @@ public class PE_05CasconFernando {
                 case 2:
                     //comprovar que hi hagi un ticket existent
                     if (ticket.equals("")) {
-                        System.out.println("Error, crea una nova comanda.");
+                        System.out.println("Error, no hi ha cap comanda creada.");
 
                     } else {
                         do {
