@@ -33,8 +33,7 @@ public class PE_05CasconFernando {
                     System.out.println("______________________________________");
                     System.out.println("============ NOVA COMANDA ============");
                     System.out.println("______________________________________");
-                    System.out.print("Introdueix el nom del client: ");
-                    client = sc.nextLine();
+                    client = client();
 
                     ticket += "Client: " + client + "\n\n" + formatearColumna("Producte", 20) + formatearColumna("Quantitat", 13) + formatearColumna("Preu unit.", 13) + formatearColumna("Subtotal", 13) + "\n";
                     ticket += "---------------------------------------------------------\n"; 
@@ -118,6 +117,20 @@ public class PE_05CasconFernando {
         }
 
         return resultado;
+    }
+
+    public String client() {
+        String client = "";
+        do {
+            System.out.print("Introdueix el nom del client: ");
+            client = sc.nextLine();
+
+            if (client.equals("")) {
+                System.out.println("Error, el nom no pot quedar buit.");
+            }
+        } while (client.equals(""));
+
+        return client;
     }
 
     public String producte() {
