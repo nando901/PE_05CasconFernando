@@ -17,9 +17,7 @@ public class PE_05CasconFernando {
 
         //bucle inicial
         do {
-            System.out.println("______________________________________");
-            System.out.println("===== GESTIÓ COMANDES RESTAURANT ====="); 
-            System.out.println("______________________________________");
+            gestioComandes();
             System.out.println("1. Crear nova comanda.");
             System.out.println("2. Actualitzar comanda anterior.");
             System.out.println("3. Visualitzar últim ticket.");
@@ -30,9 +28,7 @@ public class PE_05CasconFernando {
             switch (mainMenu) {
                 //Nova comanda
                 case 1:
-                    System.out.println("______________________________________");
-                    System.out.println("============ NOVA COMANDA ============");
-                    System.out.println("______________________________________");
+                    principi();
                     client = client();
 
                     ticket += "Client: " + client + "\n\n" + formatearColumna("Producte", 20) + formatearColumna("Quantitat", 13) + formatearColumna("Preu unit.", 13) + formatearColumna("Subtotal", 13) + "\n";
@@ -104,7 +100,19 @@ public class PE_05CasconFernando {
         sc.close();
     }
 
-    
+    //encapcelament
+    public void principi() {
+        System.out.println("______________________________________");
+        System.out.println("============ NOVA COMANDA ============");
+        System.out.println("______________________________________");
+    }
+
+    public void gestioComandes() {
+        System.out.println("______________________________________");
+        System.out.println("===== GESTIÓ COMANDES RESTAURANT ====="); 
+        System.out.println("______________________________________");
+    }
+
     //metode per al format del ticket
     public String formatearColumna(Object valor, int ancho) {
         String texto = "" + valor; 
