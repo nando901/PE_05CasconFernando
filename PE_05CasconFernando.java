@@ -16,30 +16,28 @@ public class PE_05CasconFernando {
         int quantitat = 0;
 
         //bucle inicial
-        do {
-            gestioComandes();
-            System.out.println("1. Crear nova comanda.");
-            System.out.println("2. Actualitzar comanda anterior.");
-            System.out.println("3. Visualitzar últim ticket.");
-            System.out.println("4. Sortir");
-            mainMenu = sc.nextInt();
-            sc.nextLine();
+        do {            
+            mainMenu = menu(); //menu inicial
 
             switch (mainMenu) {
                 //Nova comanda
                 case 1:
-                    principi();
-                    client = client();
+                    //reinici de dades per la creació d'un nou ticket
+                    ticket = "";
+                    ticketTotal = "";
+                    total = 0;
+                    subtotal = 0;
 
-                    ticket += "Client: " + client + "\n\n" + formatearColumna("Producte", 20) + formatearColumna("Quantitat", 13) + formatearColumna("Preu unit.", 13) + formatearColumna("Subtotal", 13) + "\n";
-                    ticket += "---------------------------------------------------------\n"; 
+                    principi();
+                    client = demanarClient();
+                    ticket += generarCapcalera(client); //capcelera del ticket
 
                     //bucle per anar afegint productes
                     do {
-                        producte = producte();
+                        producte = demanarProducte();
                         preuUnitari = preuUnitari();
                         quantitat = quantitat();
-                        afegir = afegir(); 
+                        afegir = afegirProducte(); 
 
                         subtotal = preuUnitari * quantitat;
                         total += subtotal;
@@ -52,7 +50,7 @@ public class PE_05CasconFernando {
                     ticketTotal = calculIva(total);
 
                     System.out.println("\nS'està generant el tiquet...");
-                    System.out.println("______________________________________\n=============== TIQUET ===============\n______________________________________\n\n");
+                    System.out.println("______________________________________\n=============== TIQUET ===============\n______________________________________\n");
                     System.out.println(ticket + ticketTotal);
                     System.out.println("Comanda enregistrada correctament.");
                     break;
@@ -65,10 +63,10 @@ public class PE_05CasconFernando {
 
                     } else {
                         do {
-                            producte = producte();
+                            producte = demanarProducte();
                             preuUnitari = preuUnitari();
                             quantitat = quantitat();
-                            afegir = afegir(); 
+                            afegir = afegirProducte(); 
 
                             subtotal = preuUnitari * quantitat;
                             total += subtotal;
@@ -80,36 +78,64 @@ public class PE_05CasconFernando {
                         ticketTotal = calculIva(total);
                         System.out.println("______________________________________\n========== TIQUET ACTUALITZAT=========\n______________________________________\n\n");
                         System.out.println(ticket + ticketTotal);
-                        System.out.println("Comanda actialitzada correctament.");
+                        System.out.println("Comanda actualitzada correctament.");
                     }
                     break;
 
                 //imprimir ultim ticket
                 case 3:
-                    System.out.println("______________________________________\n============ ÚLTIM TIQUET ============\n______________________________________\n");
-                    System.out.println(ticket + ticketTotal);
+                    if (ticket.equals("")) {
+                        System.out.println("Error, crea un ticket primer.");
+
+                    } else {
+                        System.out.println("______________________________________\n============ ÚLTIM TIQUET ============\n______________________________________\n");
+                        System.out.println(ticket + ticketTotal);
+                    }
                     break;
 
                 //finalitzacio de codi
                 case 4:
-                    System.out.println("______________________________________\n========== FINS LA PROPERA! ==========\n______________________________________\n\n");
+                    System.out.println("______________________________________\n========== FINS LA PROPERA! ==========\n______________________________________\n");
                     break;
             }
         } while (mainMenu != 4);
 
         sc.close();
     }
+    
+    public int menu() {
+        int choice = 0;
+
+        do {
+            System.out.println("______________________________________");
+            System.out.println("===== GESTIÓ COMANDES RESTAURANT ====="); 
+            System.out.println("______________________________________");
+            System.out.println("1. Crear nova comanda.");
+            System.out.println("2. Actualitzar comanda anterior.");
+            System.out.println("3. Visualitzar últim ticket.");
+            System.out.println("4. Sortir");
+
+            try {
+                choice = sc.nextInt();
+                sc.nextLine();
+
+                if (choice < 1 || choice > 4) {
+                    System.out.println("Error, insereix una opció vàlida.");
+                }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Format invàlid.");
+                sc.nextLine();
+            }
+        } while (choice < 1 || choice > 4);
+        
+        return choice;
+    }
 
     //encapcelament
     public void principi() {
         System.out.println("______________________________________");
         System.out.println("============ NOVA COMANDA ============");
-        System.out.println("______________________________________");
-    }
-
-    public void gestioComandes() {
-        System.out.println("______________________________________");
-        System.out.println("===== GESTIÓ COMANDES RESTAURANT ====="); 
         System.out.println("______________________________________");
     }
 
@@ -127,7 +153,18 @@ public class PE_05CasconFernando {
         return resultado;
     }
 
-    public String client() {
+    public String generarCapcalera(String client) {
+        String ticket = "Client: " + client + "\n\n";
+        ticket += formatearColumna("Producte", 20);
+        ticket += formatearColumna("Quantitat", 13);
+        ticket += formatearColumna("Preu unit.", 13);
+        ticket += formatearColumna("Subtotal", 13) + "\n";
+        ticket += "---------------------------------------------------------\n";
+
+    return ticket;
+}
+
+    public String demanarClient() {
         String client = "";
         do {
             System.out.print("Introdueix el nom del client: ");
@@ -141,10 +178,18 @@ public class PE_05CasconFernando {
         return client;
     }
 
-    public String producte() {
+    public String demanarProducte() {
         String producte = "";
-        System.out.print("Introdueix el producte: ");
-        producte = sc.nextLine();
+
+        do {
+            System.out.print("Introdueix el producte: ");
+            producte = sc.nextLine();
+
+            if (producte.equals("")) {
+                System.out.println("Error, el nom no pot quedar buit.");
+            }
+
+        } while (producte.equals(""));
 
         return producte;
     }
@@ -157,7 +202,13 @@ public class PE_05CasconFernando {
             try {
                 System.out.print("Preu unitari: ");
                 preuUnitari = sc.nextDouble();
-                validation = false;
+
+                if (preuUnitari <= 0) {
+                    System.out.println("Error, el preu no pot ser 0 o negatiu.");
+
+                } else {
+                    validation = false;
+                }
 
             } catch (InputMismatchException e) {
                 System.out.println("Format invàlid.");
@@ -176,7 +227,13 @@ public class PE_05CasconFernando {
                 System.out.print("Quantitat: ");
                 quantitat = sc.nextInt();
                 sc.nextLine();
-                validation = false;
+
+                if (quantitat <= 0) {
+                    System.out.println("Error, la quantitat no pot ser 0 o menor.");
+
+                } else {
+                    validation = false;
+                }
 
             } catch (InputMismatchException e) {
                 System.out.println("Format invàlid.");
@@ -186,7 +243,7 @@ public class PE_05CasconFernando {
         return quantitat;
     }
 
-    public String afegir() {
+    public String afegirProducte() {
         String afegir = "";
         boolean validation = true;
 
@@ -215,7 +272,7 @@ public class PE_05CasconFernando {
 
         ivaTotal = total * iva;
         preuFinal = total + ivaTotal;
-
+      
         ticketTotal += "---------------------------------------------------------\n";
         ticketTotal += String.format("%-35s %15.2f€\n", "Total sense IVA:", total);
         ticketTotal += String.format("%-35s %15.2f€\n", "IVA (10%):", ivaTotal);
